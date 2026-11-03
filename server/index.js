@@ -1,0 +1,30 @@
+import express from 'express';
+import helmet from 'helmet';
+import {rateLimit} from 'express-rate-limit';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+import {products,normalizeSearch} from '../src/data.js';
+
+const app=express();
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+app.disable('x-powered-by');
+app.use(helmet({contentSecurityPolicy:false,crossOriginEmbedderPolicy:false}));
+app.use('/api',rateLimit({windowMs:60_000,limit:180,standardHeaders:'draft-7',legacyHeaders:false}));
+const categories=[...new Set(products.map(p=>p.category))];
+app.get('/api/health',(_req,res)=>res.json({status:'ok',service:'mm-catalog'}));
+app.get('/api/categories',(_req,res)=>res.json({data:categories}));
+app.get('/api/products',(req,res)=>{
+ const category=typeof req.query.category==='string'?req.query.category.slice(0,100):'';
+ const q=typeof req.query.q==='string'?normalizeSearch(req.query.q.slice(0,100)):'';
+ const page=Math.max(1,Math.min(1000,Number.parseInt(req.query.page,10)||1));
+ const limit=Math.max(1,Math.min(100,Number.parseInt(req.query.limit,10)||32));
+ let result=products.filter(p=>(!category||category==='الكل'||p.category===category)&&(!q||normalizeSearch(`${p.title} ${p.description} ${p.category}`).includes(q)));
+ res.set('Cache-Control','public, max-age=60');
+ res.json({data:result.slice((page-1)*limit,page*limit),meta:{total:result.length,page,limit,totalPages:Math.ceil(result.length/limit)}});
+});
+app.get('/api/products/:id',(req,res)=>{const product=products.find(p=>String(p.id)===req.params.id);if(!product)return res.status(404).json({error:'المنتج غير موجود'});res.json({data:product})});
+app.use('/api',(_req,res)=>res.status(404).json({error:'Not found'}));
+app.use(express.static(path.join(root,'dist'),{maxAge:'1h',index:false}));
+app.get('/{*path}',(_req,res)=>res.sendFile(path.join(root,'dist','index.html'),err=>{if(err&&!res.headersSent)res.status(503).send('Run npm run build first.')}));
+const port=Number(process.env.PORT)||3001;
+app.listen(port,'0.0.0.0',()=>console.log(`M&M server running on port ${port}`));
