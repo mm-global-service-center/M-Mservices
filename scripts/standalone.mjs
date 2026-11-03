@@ -17,13 +17,14 @@ try{
  let main=await readFile(path.join(temp,'main.jsx'),'utf8');main="import {assets} from './assets.js';\n"+main.replace("import './style.css';",'');
  main=main.replaceAll("import.meta.env.BASE_URL+`images/${n}.webp`","assets[`${n}.webp`]")
   .replaceAll("import.meta.env.BASE_URL+`images/${p.image}.webp`","assets[`${p.image}.webp`]")
-  .replaceAll("import.meta.env.BASE_URL+'images/13.webp'","assets['13.webp']")
+  .replaceAll("import.meta.env.BASE_URL+'images/about-products.webp'","assets['about-products.webp']")
+  .replaceAll("import.meta.env.BASE_URL+'images/brand-logo.png'","assets['brand-logo.png']")
   .replaceAll("import.meta.env.BASE_URL+'images/whatsapp-1.png'","assets['whatsapp-1.png']")
   .replaceAll("import.meta.env.BASE_URL+'images/whatsapp-2.png'","assets['whatsapp-2.png']");
  const api="useEffect(()=>{const controller=new AbortController();fetch(import.meta.env.BASE_URL+'api/products?limit=100',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('offline');return r.json()}).then(json=>{if(Array.isArray(json.data))setCatalog(json.data)}).catch(()=>{});return()=>controller.abort()},[]);";
  if(!main.includes(api))throw Error('Preview transform: API expression changed');main=main.replace(api,'');
  if(main.includes('import.meta.env.BASE_URL'))throw Error('Preview transform: unresolved asset path');await writeFile(path.join(temp,'main.jsx'),main);
- let globe=await readFile(path.join(temp,'Globe.jsx'),'utf8');globe="import {assets} from './assets.js';\n"+globe.replace("import.meta.env.BASE_URL+'earth.jpg'","assets['earth.jpg']");await writeFile(path.join(temp,'Globe.jsx'),globe);
+ let globe=await readFile(path.join(temp,'Globe.jsx'),'utf8');globe="import {assets} from './assets.js';\n"+globe.replace("import.meta.env.BASE_URL+'earth.jpg'","assets['earth.jpg']").replace("import.meta.env.BASE_URL+'images/brand-logo.png'","assets['brand-logo.png']");await writeFile(path.join(temp,'Globe.jsx'),globe);
  const result=await build({entryPoints:[path.join(temp,'main.jsx')],bundle:true,minify:true,jsx:'automatic',format:'iife',target:'es2020',write:false});
  let css=await readFile(path.join(temp,'style.css'),'utf8');css=css.replace("url('./assets/cairo.ttf')",`url('${uri(await readFile(fontPath),'font/ttf')}')`);
  // In a sandbox with no popup permission, show the actual QR and explain the limitation.

@@ -12,3 +12,7 @@
 .globe-stage:has(.globe-fallback) .fallback-caption{display:block}
 
 .brand-mark{display:flex;align-items:center;justify-content:center;direction:ltr}.brand-mark span{display:inline}.detail-list{list-style:none;margin:17px 0 0;padding:0;display:grid;gap:9px}.detail-list li{display:flex;gap:8px;align-items:flex-start;color:#527889;font-size:11px;line-height:1.8}.detail-list svg{flex:none;color:#38a7bf;margin-top:3px}.gallery-note{font-size:10px;color:#73919c;margin-top:11px}.gallery-note+.thumbnails{margin-top:6px}.modal-content{padding-top:45px}
+/* الشعار الأصلي الذهبي، ثابت فوق الأرض وفي شريط التنقل */
+.brand-logo{width:72px;height:48px;object-fit:contain;flex:none}.brand-name strong{font-family:Cairo,Tahoma,Arial,sans-serif;font-size:12px;letter-spacing:0}.brand-name small{font-size:9px}.brand-light .brand-logo{filter:drop-shadow(0 1px 2px #0005)}.globe-logo{width:190px;top:37%;line-height:normal;letter-spacing:0;filter:drop-shadow(0 3px 5px #102a35aa)}.globe-logo img{display:block;width:100%;height:auto}.globe-loading{width:180px}.globe-loading img{width:100%}@media(max-width:650px){.brand-logo{width:60px;height:43px}.brand-name strong{font-size:10px}.brand-name small{font-size:8px}.globe-logo{width:155px}}
+
+.product-image.contain{background:#eef5fa}.product-image.contain img{object-fit:contain}

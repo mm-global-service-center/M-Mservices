@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "concurrently --kill-others --names api,web \"node server/index.js\" \"vite --host 0.0.0.0\"",
     "server": "node server/index.js",
     "start": "node server/index.js",
     "build": "vite build",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.5",
     "qrcode": "^1.5.4",
     "vite": "^6.4.5"
   }
